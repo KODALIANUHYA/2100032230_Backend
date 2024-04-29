@@ -1,0 +1,40 @@
+import sqlite3
+
+conn = sqlite3.connect(':memory:')
+cursor = conn.cursor()
+
+cursor.execute('''
+    CREATE TABLE locations (
+        location_id INTEGER PRIMARY KEY,
+        street_address TEXT,
+        city TEXT,
+        state_province TEXT,
+        country_id TEXT
+    )
+''')
+
+cursor.executemany('''
+    INSERT INTO locations (location_id, street_address, city, state_province, country_id) VALUES (?, ?, ?, ?, ?)
+''', [
+    (1000, '1297 Via Cola di Rie', 'Roma', None, 'IT'),
+    (1100, '93091 Calle della Te', 'Venice', None, 'IT'),
+    (1200, '2017 Shinjuku-ku', 'Tokyo', 'Tokyo Prefectu', 'JP'),
+    (1300, '9450 Kamiya-cho', 'Hiroshima', None, 'JP'),
+    (1400, '2014 Jabberwocky Rd', 'Southlake', 'Texas', 'US'),
+    (1500, '2011 Interiors Blvd', 'South San', 'California', 'US'),
+    (1600, '2007 Zagora St', 'South Brun', 'New Jersey', 'US'),
+    (1700, '2004 Charade Rd', 'Seattle', 'Washington', 'US'),
+    (1800, '147 Spadina Ave', 'Toronto', 'Ontario', 'CA')
+])
+
+cursor.execute('''
+    SELECT location_id, street_address, city, state_province
+    FROM locations
+    WHERE country_id = 'CA'
+''')
+
+rows = cursor.fetchall()
+for row in rows:
+    print(row)
+
+conn.close()
